@@ -199,13 +199,13 @@ Proveedores
         </tr>
         @foreach($data as $d)
         <tr class="rowcontent">
-          <td class="number" number="{{ $d->number }}">{{ $d->number }}</td>
+          <td class="number{{ $d->number }}" number="{{ $d->number }}">{{ $d->number }}</td>
           <td>{{ $d->prov_doc_type }}</td>
-          <td class="prov_doc_number" prov_doc_number="{{ $d->prov_doc_number }}">{{ $d->prov_doc_number }}</td>
-          <td class="prov_name" prov_name="{{ $d->prov_name }}">{{ $d->prov_name }}</td>
+          <td class="prov_doc_number{{ $d->prov_doc_number }}" prov_doc_number="{{ $d->prov_doc_number }}">{{ $d->prov_doc_number }}</td>
+          <td class="prov_name{{ $d->prov_name }}" prov_name="{{ $d->prov_name }}">{{ $d->prov_name }}</td>
           <td>{{ $d->prov_doc_detalle }}</td>
           <td align=right>${{ number_format($d->prov_doc_value,0,',','.') }}&nbsp;&nbsp;</td>
-          <td class="check_number" check_number="{{ $d->check_number }}">{{ $d->check_number }}</td>
+          <td class="check_number{{ $d->check_number }}" check_number="{{ $d->check_number }}">{{ $d->check_number }}</td>
           <td>{{ $d->check_bank }}</td>
           <td>{{ $d->check_date }}</td>
           <td align=right>${{ number_format($d->check_value,0,',','.') }}&nbsp;&nbsp;</td>
@@ -268,6 +268,7 @@ $(document).ready(function(){
           $("#MSG").html(d.result_content).removeClass('error').addClass('info');
           resetForm();
           $("#number").val(d.result_lastindex);
+          $("#number").attr("value", d.result_lastindex);
           $("#last-number").html(d.result_lastindex);
         }
         ActualizarTablaProveedores();
@@ -284,32 +285,32 @@ $(document).ready(function(){
     var buscarpor = $("#buscarpor :selected").val();
     var filtro    = $("#filtro").val().toLowerCase();
     var elementos = $("#TablaProveedores").find("tr.rowcontent");
-    $(elementos).hide('fast');
-    var cantidad_elementos=0;
-    var encontrado= false;
-    $.each(elementos, function(i, item){
-      var x = $(item).find("td." + buscarpor);
-      if(x!=undefined){
-        $.each(x, function(ii, td){
-          var v = $(td).attr(buscarpor);
-          if(v!=undefined){
-            v=v.toLowerCase();
-            if(v.indexOf(filtro)>=0){
-              $(item).show('fast');
-              encontrado=true;
-              cantidad_elementos++;
-            }
-          }
-        });
-      }
-    });
-    //Si no se encuentra ningún elemento se vuelven a mostrar toda la tabla.
-    if(!encontrado){
-      $("#resultado-busqueda").html('No se han encontrado resultados.');
-      $.each(elementos, function(i, item){ $(item).show('fast'); });
+    if(filtro==''){
+      $(elementos).show('fast');
     }else{
-      $("#resultado-busqueda").html('Se encontraron ' + cantidad_elementos + ' resultados.');
+      $(elementos).hide('fast');
+      var cantidad_elementos=0;
+      var encontrado= false;
+      var el = $(elementos).find("." + buscarpor + filtro);
+      if(el!=undefined){
+        cantidad_elementos = el.length;
+        encontrado=true;
+        if(cantidad_elementos>1){
+          $.each(el, function(i, item){
+            $(item.parentElement).show('fast');
+          });
+        }else{
+          $(el[0].parentElement).show('fast');
+        }
+        $("#resultado-busqueda").html('Se encontraron ' + cantidad_elementos + ' resultados.');
+      }
+      //Si no se encuentra ningún elemento se vuelven a mostrar toda la tabla.
+      if(!encontrado){
+        $("#resultado-busqueda").html('No se han encontrado resultados.');
+        $.each(elementos, function(i, item){ $(item).show('fast'); });
+      }
     }
+
     $("#resultado-busqueda").removeClass('loader');
     return false;
   });
@@ -446,6 +447,7 @@ function editar(_id){
         }else if(d.result_code==201){
           var dd = d.result_content[0];
           $("#number").val(dd.number);
+          $("#number").attr("value", dd.number);
           $("#last-number").html(dd.number);
           $("#_method").val("UPDATE");
           $("#prov_doc_number").val(dd.prov_doc_number);

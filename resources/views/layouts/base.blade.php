@@ -109,6 +109,57 @@
               background-size: auto;
               height: 64px;
             }
+            .dia-habil, .dia-feriado {
+              text-align: center;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .dia-habil { width: 14.8%; }
+            .dia-feriado { width: 13%; }
+            .dia-cuadro {
+              height: 70px;
+              font-size: 30px;
+            }
+            #VentanaAgenda{
+              position: absolute;
+              top: 10px;
+              left: 25%;
+              width: 50%;
+              height: 480px;
+              background: #FFF;
+              z-index:999;
+              display: none;
+            }
+            .item-hora{
+              text-align: center;
+              padding: 2px;
+              font-size: 20px;
+              color: #000;
+            }
+            .item-hora:hover{
+              color:#FFF;
+              background: #2c539e;
+              background: -moz-linear-gradient(top,  #2c539e 0%, #2c539e 100%);
+              background: -webkit-linear-gradient(top,  #2c539e 0%,#2c539e 100%);
+              background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%);
+              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 );
+            }
+            .formulario-izquierdo{
+              width: 100px;
+              overflow-y: auto;
+              overflow-x: hidden;
+              height: 300px;
+              background: #f7fbfc;
+              background: -moz-linear-gradient(top,  #f7fbfc 0%, #d9edf2 40%, #add9e4 100%);
+              background: -webkit-linear-gradient(top,  #f7fbfc 0%,#d9edf2 40%,#add9e4 100%);
+              background: linear-gradient(to bottom,  #f7fbfc 0%,#d9edf2 40%,#add9e4 100%);
+              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7fbfc', endColorstr='#add9e4',GradientType=0 );
+              cursor: pointer;
+            }
+            .formulario-derecho{
+              margin-top:-300px;
+              margin-left: 120px;
+            }
         </style>
     </head>
     <body>
@@ -141,7 +192,17 @@
                       <li role="presentation"><a href="{{ url ('ChequesNulos') }}">Ingresar cheques nulos</a></li>
                     </ul>
                   </li>
-                  <li role="presentation"><a href="{{ url('/Citas') }}">Citas</a></li>
+                  <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"
+                    role="button" aria-haspopup="true" aria-expanded="false">
+                    Caja chica <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li role="presentation"><a href="{{ url ('EgresoCajaChica') }}">Egresos</a></li>
+                      <li role="presentation"><a href="{{ url ('ListadoEgresoCajaChica') }}">Listado de egresos</a></li>
+                    </ul>
+                  </li>
+                  <li role="presentation"><a href="{{ url('/Citas') }}/{{ date('m') }}">Citas</a></li>
                 </ul>
               </div>
             </div>

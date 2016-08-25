@@ -20,6 +20,22 @@ Route::group(['middleware'=>['web']], function(){
     return view('registro');
   });
 
+/* --------------- Caja Chica --------------------*/
+Route::get('/EgresoCajaChica', function(){
+  return View::make('caja-chica.egresos');
+});
+Route::get('/ListadoEgresoCajaChica', function(){
+  $capture=NULL;
+  $dump = App\Capture::orderBy('snumber', 'desc')->get();
+  foreach($dump as $d){
+    $spend = App\Spend::where('captureid','=',$d->cnumber)->get();
+    $capture[]=['capture'=>$d, 'spend'=>$spend];
+  }
+  return View::make('caja-chica.listado',
+  ['data'=>$capture]);
+});
+Route::post('/AgregarRendicion', 'CajaChicaController@store');
+
 /* --------------- PROVEEDORES ------------------- */
   Route::get('/ImprimirComprobante/{id}', function($id){
     $data = DB::table('providers')->where('id', '=', $id)->get();
@@ -48,8 +64,8 @@ Route::group(['middleware'=>['web']], function(){
   Route::get('/ObtenerRegistroProveedor/{id}',  'ProveedoresController@show');
   Route::get('Proveedores',                     'ProveedoresController@index');
 
-  Route::get('/Citas', function(){
-    return View::make('citas.citas');
+  Route::get('/Citas/{mes}', function($mes){
+    return View::make('citas.citas', ['actual'=>$mes]);
   });
 
   //Cheques
